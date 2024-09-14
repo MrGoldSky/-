@@ -67,7 +67,6 @@ def registration(message):
         finally:
             con.close()
 
-        # Вывод интерфейса
         interface(message)
     
     registrationId(message)
@@ -139,21 +138,18 @@ def entry(message):
 
     con, cur = connect_to_db()
     try:
-        # Проверяем, есть ли пользователь уже в таблице baseEntry
         cur.execute("SELECT * FROM baseEntry WHERE user_id = ?", (message.chat.id,))
         result = cur.fetchone()
 
         if result:
             printy(message.chat.id, "Вы уже записаны на ближайшую сдачу.")
         else:
-            # Получаем имя пользователя из таблицы baseReg
             cur.execute("SELECT name FROM baseReg WHERE user_id = ?", (message.chat.id,))
             user_info = cur.fetchone()
 
             if user_info:
                 user_name = user_info[0]
 
-                # Записываем информацию в таблицу baseEntry
                 cur.execute(
                     "INSERT INTO baseEntry (time, user_id) VALUES (?, ?)",
                     (str(time).split()[1], message.chat.id)
